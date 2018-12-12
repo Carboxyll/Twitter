@@ -15,16 +15,13 @@
 
 #define LIB_DOMAIN "arduino-tweet.appspot.com"
 
-Twitter::Twitter(const char *token) : token(token)
-{
-}
-
 bool Twitter::post(const char *msg)
 {
     parseStatus = 0;
     statusCode = 0;
-    if (client.connect(LIB_DOMAIN, 80)) {
-        client.println("POST http://" LIB_DOMAIN "/update HTTP/1.0");
+    if (client.connect(LIB_DOMAIN, 80))
+    {
+        client.println("POST http://" LIB_DOMAIN "/update HTTP/1.1");
         client.print("Content-Length: ");
         client.println(strlen(msg) + strlen(token) + 14);   // 14=strlen("token=&status=")
         client.println("Host: " LIB_DOMAIN);
@@ -33,7 +30,9 @@ bool Twitter::post(const char *msg)
         client.print(token);
         client.print("&status=");
         client.println(msg);
-    } else {
+    }
+    else
+    {
         return false;
     }
     return true;
@@ -41,7 +40,8 @@ bool Twitter::post(const char *msg)
 
 bool Twitter::checkStatus(Print *debug)
 {
-    if (!client.connected()) {
+    if (!client.connected())
+    {
         if (debug)
             while(client.available())
                 debug->print((char)client.read());
@@ -54,16 +54,21 @@ bool Twitter::checkStatus(Print *debug)
     char c = client.read();
     if (debug)
         debug->print(c);
-    switch(parseStatus) {
-    case 0:
-        if (c == ' ') parseStatus++; break;  // skip "HTTP/1.1 "
-    case 1:
-        if (c >= '0' && c <= '9') {
-            statusCode *= 10;
-            statusCode += c - '0';
-        } else {
-            parseStatus++;
-        }
+    switch(parseStatus)
+    {
+        case 0:
+            if (c == ' ') parseStatus++; break;  // skip "HTTP/1.1 "
+
+        case 1:
+            if (c >= '0' && c <= '9')
+            {
+                statusCode *= 10;
+                statusCode += c - '0';
+            }
+            else
+            {
+                parseStatus++;
+            }
     }
     return true;
 }

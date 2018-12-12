@@ -14,25 +14,23 @@
 #ifndef TWITTER_H_INCLUDED
 #define TWITTER_H_INCLUDED
 
-#include <inttypes.h>
-#include <avr/pgmspace.h>
 #include <SPI.h>
 #include <Ethernet.h>
 
 class Twitter
 {
-private:
-    uint8_t parseStatus;
-    int statusCode;
-    const char *token;
-    EthernetClient client;
-public:
-    Twitter(const char *user_and_passwd);
+    private:
+        uint8_t parseStatus;
+        int statusCode;
+        const char *token;
+        EthernetClient client;
 
-    bool post(const char *msg);
-    bool checkStatus(Print *debug = NULL);
-    int  wait(Print *debug = NULL);
-    int  status(void) { return statusCode; }
+    public:
+        Twitter(const char *token) : token(token) {}
+        bool post(const char *msg);
+        bool checkStatus(Print *debug = NULL);
+        int  wait(Print *debug = NULL);
+        int  status(void) { return statusCode; }
 };
 
 #endif
