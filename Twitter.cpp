@@ -7,43 +7,27 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// ver1.2 - Use <string.h>
-// ver1.3 - Support IDE 1.0
+// ver1.2.0 - Use <string.h>
+// ver1.3.0 - Support IDE 1.0
+// ver1.3.1 - Add "Host:" header.
 
-#include <string.h>
 #include "Twitter.h"
 
 #define LIB_DOMAIN "arduino-tweet.appspot.com"
 
-#if defined(ARDUINO) && ARDUINO < 100
-static uint8_t server[] = {0,0,0,0}; // IP address of LIB_DOMAIN
-Twitter::Twitter(const char *token) : client(server, 80), token(token)
-{
-}
-#else
 Twitter::Twitter(const char *token) : token(token)
 {
 }
-#endif
 
 bool Twitter::post(const char *msg)
 {
-#if defined(ARDUINO) && ARDUINO < 100
-	DNSError err = EthernetDNS.resolveHostName(LIB_DOMAIN, server);
-	if (err != DNSSuccess) {
-		return false;
-	}
-#endif
 	parseStatus = 0;
 	statusCode = 0;
-#if defined(ARDUINO) && ARDUINO < 100
-	if (client.connect()) {
-#else
 	if (client.connect(LIB_DOMAIN, 80)) {
-#endif
 		client.println("POST http://" LIB_DOMAIN "/update HTTP/1.0");
 		client.print("Content-Length: ");
-		client.println(strlen(msg)+strlen(token)+14);
+		client.println(strlen(msg) + strlen(token) + 14);   // 14=strlen("token=&status=")
+        client.println("Host: " LIB_DOMAIN);
 		client.println();
 		client.print("token=");
 		client.print(token);

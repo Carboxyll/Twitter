@@ -7,21 +7,17 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-// ver1.2 - Use <Udp.h> to support IDE 0019 or later
-// ver1.3 - Support IDE 1.0
+// ver1.2.0 - Use <Udp.h> to support IDE 0019 or later
+// ver1.3.0 - Support IDE 1.0
+// ver1.3.1 - Add "Host:" header.
 
-#ifndef TWITTER_H
-#define TWITTER_H
+#ifndef TWITTER_H_INCLUDED
+#define TWITTER_H_INCLUDED
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
-#if defined(ARDUINO) && ARDUINO > 18   // Arduino 0019 or later
 #include <SPI.h>
-#endif
 #include <Ethernet.h>
-#if defined(ARDUINO) && ARDUINO < 100  // earlier than Arduino 1.0
-#include <EthernetDNS.h>
-#endif
 
 class Twitter
 {
@@ -29,11 +25,7 @@ private:
 	uint8_t parseStatus;
 	int statusCode;
 	const char *token;
-#if defined(ARDUINO) && ARDUINO < 100
-	Client client;
-#else
 	EthernetClient client;
-#endif
 public:
 	Twitter(const char *user_and_passwd);
 	
@@ -43,4 +35,4 @@ public:
 	int  status(void) { return statusCode; }
 };
 
-#endif	//TWITTER_H
+#endif
